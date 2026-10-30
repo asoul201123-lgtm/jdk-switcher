@@ -115,7 +115,3 @@ linux/         Linux 桌面与命令行、独立测试、zipapp / tar.gz 打包
 ```
 
 发布包只使用明确列出的文件和目录，不直接压缩整个工作目录。详见 [贡献指南](CONTRIBUTING.md) 和 [安全问题报告](SECURITY.md)。
-
-## 许可证
-
-[MIT](LICENSE)。欢迎通过 Issue 和 Pull Request 改进。
