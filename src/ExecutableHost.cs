@@ -47,15 +47,22 @@ namespace SafeJdkSwitcher
                     runspace.ApartmentState = ApartmentState.STA;
                     runspace.ThreadOptions = PSThreadOptions.UseCurrentThread;
                     runspace.Open();
+                    string coreText = ReadResource("JdkSwitcher.Core.psm1");
+                    string downloadText = ReadResource("JdkSwitcher.Download.psm1");
                     runspace.SessionStateProxy.SetVariable("JdkSwitcherExecutable",
                         Assembly.GetExecutingAssembly().Location);
+                    runspace.SessionStateProxy.SetVariable("JdkSwitcherCoreModuleText", coreText);
+                    runspace.SessionStateProxy.SetVariable("JdkSwitcherDownloadModuleText", downloadText);
                     using (PowerShell shell = PowerShell.Create())
                     {
                         shell.Runspace = runspace;
-                        shell.AddScript("param($text) $ErrorActionPreference = 'Stop'; " +
+                        shell.AddScript("param($coreText, $downloadText) $ErrorActionPreference = 'Stop'; " +
                             "New-Module -Name JdkSwitcher.Core -ScriptBlock " +
-                            "([scriptblock]::Create($text)) | Import-Module -Force")
-                            .AddArgument(ReadResource("JdkSwitcher.Core.psm1"));
+                            "([scriptblock]::Create($coreText)) | Import-Module -Force; " +
+                            "New-Module -Name JdkSwitcher.Download -ScriptBlock " +
+                            "([scriptblock]::Create($downloadText)) | Import-Module -Force")
+                            .AddArgument(coreText)
+                            .AddArgument(downloadText);
                         InvokeChecked(shell);
                         shell.Commands.Clear();
                         shell.Streams.Error.Clear();

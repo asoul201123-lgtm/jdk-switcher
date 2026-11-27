@@ -1,7 +1,7 @@
 ﻿#requires -Version 5.1
 [CmdletBinding()]
 param(
-    [ValidatePattern('^\d+\.\d+\.\d+(?:-[a-zA-Z0-9.-]+)?$')][string]$Version = '1.1.0',
+    [ValidatePattern('^\d+\.\d+\.\d+(?:-[a-zA-Z0-9.-]+)?$')][string]$Version = '1.2.0',
     [ValidatePattern('^JdkSwitcher(?:-[0-9.]+)?[.]exe$')][string]$ExeFileName = 'JdkSwitcher.exe'
 )
 Set-StrictMode -Version Latest

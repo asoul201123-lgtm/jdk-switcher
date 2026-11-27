@@ -1,0 +1,26 @@
+# Local state must never be published.
+.local/
+dist/
+artifacts/
+backups/
+*.log
+*.tmp
+*.bak
+*.user
+.env
+.env.*
+!.env.example
+.vscode/
+.idea/
+Thumbs.db
+Desktop.ini
+
+# Python and Linux development caches
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+
+# Release binaries unpacked at the repository root
+/JdkSwitcher.exe
+/JdkSwitcher.exe.sha256

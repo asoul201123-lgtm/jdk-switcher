@@ -1,0 +1,75 @@
+name: Windows and Linux checks
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Core tests (Windows PowerShell 5.1)
+        shell: powershell
+        run: ./tests/Core.Tests.ps1
+      - name: Core tests (PowerShell 7)
+        shell: pwsh
+        run: ./tests/Core.Tests.ps1
+      - name: Download tests (Windows PowerShell 5.1, offline)
+        shell: powershell
+        run: ./tests/Download.Tests.ps1
+      - name: Download tests (PowerShell 7, offline)
+        shell: pwsh
+        run: ./tests/Download.Tests.ps1
+      - name: XAML tests
+        shell: powershell
+        run: ./tests/Ui.Tests.ps1
+      - name: WPF smoke test (read only)
+        shell: powershell
+        run: ./src/App.ps1 -SmokeTest
+      - name: Demo WPF smoke test
+        shell: pwsh
+        run: ./src/App.ps1 -Demo -SmokeTest
+      - name: Package and check privacy
+        shell: powershell
+        run: ./scripts/Package.ps1
+      - uses: actions/upload-artifact@v4
+        with:
+          name: jdk-switcher-windows
+          path: |
+            dist/*.exe
+            dist/*.zip
+            dist/*.sha256
+
+  linux:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.10', '3.12']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install desktop and shell test components
+        run: sudo apt-get update && sudo apt-get install -y zsh python3-tk xvfb xauth
+      - name: Linux filesystem and Bash/Zsh tests
+        run: python -m unittest discover -s linux/tests -v
+      - name: Desktop smoke test (virtual display, read only)
+        run: xvfb-run -a python linux/jdk_switcher.py --demo --smoke-test
+      - name: Build Linux release with privacy checks
+        run: python linux/package.py
+      - name: Packaged application smoke tests
+        run: |
+          python dist/jdk-switcher-linux.pyz --version
+          xvfb-run -a python dist/jdk-switcher-linux.pyz --demo --smoke-test
+          tar -xzf dist/jdk-switcher-1.1.0-linux.tar.gz -C "$RUNNER_TEMP"
+          "$RUNNER_TEMP/jdk-switcher-linux/jdk-switcher" --version
+      - uses: actions/upload-artifact@v4
+        with:
+          name: jdk-switcher-linux-python-${{ matrix.python-version }}
+          path: |
+            dist/*.pyz
+            dist/*.tar.gz
+            dist/*.sha256

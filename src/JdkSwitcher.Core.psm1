@@ -208,6 +208,7 @@ function Find-JdkInstallations {
             [void]$roots.Add((Join-Path $base $suffix))
         }
     }
+    [void]$roots.Add((Join-Path (Get-JdkDataDirectory) 'jdks'))
     foreach ($root in $AdditionalRoots) { [void]$roots.Add($root); [void]$candidates.Add($root) }
     foreach ($keyPath in @('HKLM:\SOFTWARE\JavaSoft', 'HKLM:\SOFTWARE\WOW6432Node\JavaSoft', 'HKCU:\SOFTWARE\JavaSoft')) {
         if (-not (Test-Path -LiteralPath $keyPath)) { continue }

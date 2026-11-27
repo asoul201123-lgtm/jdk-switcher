@@ -1,5 +1,14 @@
 # 更新记录
 
+## 1.2.0
+
+- Windows 版新增从 Eclipse Adoptium 官方目录下载 Eclipse Temurin JDK。
+- 支持选择可用 JDK 版本，自动匹配 x64 / ARM64 架构，并下载 Windows ZIP 免安装包。
+- 下载支持进度、取消、SHA-256 校验、安全解压、JDK 结构与架构校验。
+- 下载完成后可一键自动备份并切换；切换失败时保留已安装 JDK 并恢复原环境。
+- 托管 JDK 保存在 `%LOCALAPPDATA%\SafeJdkSwitcher\jdks`，重启后仍会被扫描发现。
+- 新增离线下载测试、下载弹窗 XAML 测试和 EXE 嵌入资源检查。
+
 ## 1.1.0
 
 - 新增独立 Linux 版本，支持 Tk 桌面和命令行，扫描与校验 Linux ELF JDK。

@@ -1,0 +1,15 @@
+* text=auto
+*.ps1 text eol=crlf
+*.psm1 text eol=crlf
+*.cmd text eol=crlf
+*.md text eol=lf
+*.yml text eol=lf
+*.png binary
+*.zip binary
+*.cs text eol=crlf
+*.manifest text eol=lf
+*.exe binary
+*.py text eol=lf
+*.sh text eol=lf
+*.pyz binary
+*.gz binary

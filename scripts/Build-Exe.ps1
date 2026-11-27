@@ -1,7 +1,7 @@
 ﻿#requires -Version 5.1
 [CmdletBinding()]
 param(
-    [ValidatePattern('^\d+\.\d+\.\d+(?:-[a-zA-Z0-9.-]+)?$')][string]$Version = '1.1.0',
+    [ValidatePattern('^\d+\.\d+\.\d+(?:-[a-zA-Z0-9.-]+)?$')][string]$Version = '1.2.0',
     [ValidatePattern('^JdkSwitcher(?:-[0-9.]+)?[.]exe$')][string]$FileName = 'JdkSwitcher.exe'
 )
 Set-StrictMode -Version Latest
@@ -41,6 +41,7 @@ using System.Reflection;
         ('/win32manifest:' + (Join-Path $root 'src\app.manifest')),
         ('/resource:' + (Join-Path $root 'src\App.ps1') + ',App.ps1'),
         ('/resource:' + (Join-Path $root 'src\JdkSwitcher.Core.psm1') + ',JdkSwitcher.Core.psm1'),
+        ('/resource:' + (Join-Path $root 'src\JdkSwitcher.Download.psm1') + ',JdkSwitcher.Download.psm1'),
         (Join-Path $root 'src\ExecutableHost.cs'), $infoFile
     )
     & $compiler @arguments
