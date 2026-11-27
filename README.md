@@ -19,13 +19,15 @@ Linux 使用独立的 Shell 配置后端，支持 Bash / Zsh 的当前用户环�
 
 1. 下载发布的 **`JdkSwitcher.exe`**，或者解压完整项目发布包。
 2. 双击 `JdkSwitcher.exe`。它是单文件桌面程序，不依赖旁边的 `src/` 或 `.ps1` 文件。
-3. 选择发现的 JDK；未发现时可点击“下载并切换”，从官方目录选择版本，或点击“添加目录”指定包含 `release`、`bin/java.exe` 和 `bin/javac.exe` 的根目录。
-4. 本地 JDK 会显示完整的新旧配置，选择“当前用户”或“系统级”，点击“备份并一键切换”。
+3. 在“本机 JDK”页选择已安装的版本，或点击“添加目录”指定包含 `release`、`bin/java.exe` 和 `bin/javac.exe` 的根目录。需要获取新版本时，打开“下载 JDK”页。
+4. 在本机 JDK 的详情中选择“当前用户”或“系统级”。核对变更预览，按需展开“查看完整变更”，然后点击“备份并切换”。
 5. 重新打开终端和 IDE。若启动程序仍继承旧配置，注销后重新登录。
 
 ### 下载并自动切换
 
-主窗口点击“下载并切换”，选择版本后点击同名按钮。工具会从 Eclipse Adoptium 官方 API 获取 Eclipse Temurin 的 Windows ZIP，按本机 x64 / ARM64 架构筛选，显示下载进度；下载完成后校验 SHA-256、拒绝越界或异常压缩包，验证 `release`、`java.exe` 和 `javac.exe`，再自动复用现有备份与切换事务。
+打开“下载 JDK”页会读取 Eclipse Adoptium 的官方版本目录。选择版本和切换范围后，点击“下载并切换”。工具会按本机 x64 / ARM64 架构获取 Eclipse Temurin 的 Windows ZIP，在页面中显示进度和结果。下载完成后校验 SHA-256、拒绝越界或异常压缩包，验证 `release`、`java.exe` 和 `javac.exe`，再自动备份并切换。
+
+![下载 JDK 页，全部为虚构演示数据](docs/preview-download.png)
 
 - 下载的 JDK 保存在 `%LOCALAPPDATA%\SafeJdkSwitcher\jdks`，不会写入 `Program Files`，也不会提权安装服务或 MSI。
 - 目标版本已经安装且校验通过时跳过下载，直接自动切换。
@@ -50,7 +52,7 @@ powershell.exe -NoProfile -STA -ExecutionPolicy RemoteSigned -File .\src\App.ps1
 ## Windows 版的安全设计
 
 - 启动和扫描只读配置、`release` 元数据和 PE 文件头，不运行未知的 Java 程序。
-- 只有用户主动点击下载时才访问 Eclipse Adoptium 官方 HTTPS API；没有更新检查、遥测或后台网络服务。
+- 打开或刷新“下载 JDK”页时才请求官方版本目录，点击“下载并切换”才请求下载包。所有请求使用 HTTPS，没有更新检查、遥测或后台网络服务。
 - 下载文件必须匹配发行方目录提供的 SHA-256，并在安全解压后通过完整 JDK 与架构校验，才进入列表和切换阶段。
 - 只修改 `JAVA_HOME` 和 `Path`，不删除 JDK、不修改安装文件、不设置过时的全局 `CLASSPATH`。下载的 JDK 同样不会被切换操作删除。
 - 新的 JDK `bin` 移到所选范围 Path 的最前面；保留其他原有条目及顺序，保留原有 Path 注册表类型，不使用会截断长 Path 的 `setx`。
@@ -104,7 +106,7 @@ powershell.exe -NoProfile -File .\tests\Core.Tests.ps1
 # 下载、哈希、ZIP 越界与安装测试：完全离线，不写入真实环境
 powershell.exe -NoProfile -File .\tests\Download.Tests.ps1
 
-# 主界面与下载弹窗的 XAML 加载检查
+# Windows 双页界面与离线下载切换检查
 powershell.exe -NoProfile -STA -File .\tests\Ui.Tests.ps1
 
 # 真实界面和自动发现的只读检查
